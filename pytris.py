@@ -389,10 +389,6 @@ class Game():
                 self.non_zero_remove_time=0
                 self.total_tetris= False
                 self.score_srf = self.font.render(f"{self.score}",2,(0,0,0))
-                if self.score>(conf.level_up_score*(self.level+1)):
-                    self.level +=1
-                    self.level_srf = self.font.render(f"L {self.level}",2,(0,0,0))
-
         
     def render(self):
         if self.total_tetris:
@@ -427,6 +423,12 @@ class Game():
         self.tetris.space_available=True
         self.game_stop = False
         
+    def score_and_level(self):
+        if self.score>(conf.level_up_score*(abs(conf.starting_level-self.level)+1)):
+            self.level +=1
+            self.level_srf = self.font.render(f"L {self.level}",2,(0,0,0))
+            self.game_speed=conf.base_speed - (conf.speed_incr*self.level)
+
     def cycle(self):
         if self.tetris.space_available:
             self.time_passed+= self.game_clock.tick()/1000
@@ -437,6 +439,7 @@ class Game():
                     self.tetris.placed_score = False
                 self.tetris.move("d")
                 self.time_passed = 0
+                self.score_and_level()
             self.non_zero_row()
         elif self.tetris.need_to_clean_row!=-1:
             self.time_passed+= self.game_clock.tick()/1000
@@ -506,5 +509,5 @@ if __name__=="__main__":
         conf.set_screen(500,630)
     conf.black_cell=False
     conf.starting_level=5
-    conf.level_up_score = 2000
+    conf.level_up_score = 5000
     play()
