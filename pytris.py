@@ -446,15 +446,12 @@ class Game():
         else:
             self.game_stop = True
         self.render()
-from gameUtils import Camera
-
 def play():
     screen = pygame.display.set_mode((conf.screen_w,conf.screen_h))
     game = Game(screen)
     move_mode_pressed = None
     clock=pygame.time.Clock()
     pressed_time = 0
-    camera = Camera(screen)
     while True:
         screen.fill(conf.bg)
         for event in pygame.event.get():
@@ -479,9 +476,9 @@ def play():
                         game.tetris.rotate(1)#clockwise
                     
                 elif event.key == 97: #a
-                    game.tetris.rotate(1)#clockwise
-                elif event.key == 115:
                     game.tetris.rotate(0)#counter clockwise
+                elif event.key == 115: #s
+                    game.tetris.rotate(0)#clockwise
                 elif event.unicode == 'c':
                     conf.black_cell = not conf.black_cell
 
@@ -500,7 +497,6 @@ def play():
             game.tetris.move(move_mode_pressed)
             move_mode_pressed = None
         game.cycle()
-        camera.snap()
         pygame.display.flip()
 if __name__=="__main__":
     if (in_android:=not True):
