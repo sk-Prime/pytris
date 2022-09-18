@@ -10,6 +10,8 @@ Damn this game is difficult for novice like me to implement. I wrote the code li
 - use `a` key to rotate counter clockwise and `s` key to rotate clockwise.
 - `c` key to change color
 - press down arrow to start a game again.
+- Currently game start at level 5, change it by change `conf.starting_speed`.
+- Level increase after every 5000 score.
 
 ### TODO
 - Add comments
