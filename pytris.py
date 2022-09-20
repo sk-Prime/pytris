@@ -776,7 +776,7 @@ if __name__=="__main__":
         conf.set_screen(720,1440)
         conf.key_pressed_hold=False
     else:
-        conf.set_screen(500,630)
+        conf.set_screen(500,650)
         
     conf.starting_level=0
     conf.base_speed=10
