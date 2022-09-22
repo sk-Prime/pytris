@@ -12,9 +12,10 @@ class Config():
         self.debug_stop_falling = False
         self.debug_tetris_grid = False
         self.debug_score_and_level = False
+        self.debug_move_up = False
         self.ascii_repr_char = '#'
         
-        self.rotation_kick = False
+        self.rotation_kick = True
         self.screen_w = 300
         self.screen_h = 400
         
@@ -429,7 +430,15 @@ class TetrisEngine():
         self.place_block()
         
     def translate_rotate(self,rotated_block,clockwise):
-        """Not Yet implemented""" #TODO https://tetris.wiki/Super_Rotation_System
+        """move and test rotated block"""
+        pos_x, pos_y = self.block_pos
+        if not self.collision(rotated_block,pos_x+1,pos_y):
+            self.block_pos=pos_x+1,pos_y
+            self.block = rotated_block
+        elif not self.collision(rotated_block,pos_x-1,pos_y):
+            self.block_pos=pos_x-1,pos_y
+            self.block = rotated_block
+        
                     
     def rotate(self,clockwise=1):
         self.clear_block()
@@ -595,7 +604,7 @@ class Tetris():
                 self.animation_clock= None
                 self.tetris_boom= False
     def move(self,direction):
-        if not self.game_stop:
+        if not self.game_stop and self.engine.space_available:
             self.engine.move(direction)
             
     def rotate(self,clockwise=1):
@@ -696,15 +705,15 @@ class Tetris():
                 #engine cleaned
                 self.engine.space_available = True
         self.render()
-        
-        
+
+
 def play():
     screen = pygame.display.set_mode((conf.screen_w,conf.screen_h))
     game = Tetris(screen)
     key_clock=pygame.time.Clock()
-    
     pressed_key = None
     pressed_time = 0
+    clock = pygame.time.Clock()
     
     
     def key_press(key):
@@ -715,6 +724,7 @@ def play():
             return None
         
     while True:
+        clock.tick(100)
         screen.fill(conf.bg)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -732,7 +742,7 @@ def play():
                         game.restart()
                     pressed_key=key_press('d')
                 elif event.key == 1073741906: #up
-                    if conf.debug:
+                    if conf.debug_move_up:
                         game.move('u')
                     else:
                         game.rotate(1) #clockwise
@@ -772,12 +782,25 @@ def play():
         pygame.display.flip()
         
 if __name__=="__main__":
-    if (in_android:=not True):
+    
+    if (debug:=not True):
+        conf.debug = False
+        conf.debug_placement = False
+        conf.debug_block_type = not False
+        conf.debug_block_name = 'L'
+        conf.debug_stop_falling = not False
+        conf.debug_tetris_grid = False
+        conf.debug_score_and_level = False
+        conf.ascii_repr_char = '#'
+        conf.rotation_kick = True
+        conf.debug_move_up = True
+    
+    if (in_android:=False):
         conf.set_screen(720,1440)
         conf.key_pressed_hold=False
     else:
         conf.set_screen(500,650)
         
-    conf.starting_level=0
+    conf.starting_level=3
     conf.base_speed=10
     play()
